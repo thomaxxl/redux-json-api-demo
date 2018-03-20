@@ -1,3 +1,14 @@
+Run the demo on a cors-enabled jsonapi:
+
+```
+git clone https://github.com/thomaxxl/redux-json-api-demo
+npm install
+npm start
+```
+
+
+Readme from https://github.com/dvidsilva/redux-json-api-demo :
+
 # Getting started with redux-json-api v2
 
 ## Introduction
