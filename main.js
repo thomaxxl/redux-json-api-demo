@@ -7,6 +7,17 @@ import thunk from 'redux-thunk';
 import { reducer as api, readEndpoint } from 'redux-json-api';
 import { setAxiosConfig } from 'redux-json-api';
 
+
+/*
+    Configuration parameters
+*/
+
+var baseUrl = 'http://thomaxxl.pythonanywhere.com/';
+var collection_name = 'Users';
+var collection_endpoint = collection_name + '/'
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const reducer = combineReducers({
     api
 });
@@ -14,42 +25,41 @@ const reducer = combineReducers({
 const store = createStore(reducer, applyMiddleware(thunk))
 
 store.dispatch(setAxiosConfig({
-    baseURL: 'http://localhost:8080/api/v1',
+    baseURL: baseUrl,
     headers: {
         'Authorization': 'bearer' + Math.random(),
     }
 }));
 
-class PostList extends React.Component {
+class ObjectList extends React.Component {
     componentWillMount() {
-        store.dispatch(readEndpoint('posts.json'));
+        store.dispatch(readEndpoint(collection_endpoint));
     }
 
     render() {
         return (
-            <div>
-                {this.props.posts.data.map(post => (
-                    <h1 key={post.id} >{post.attributes.title}</h1>
+            <ul>
+                {this.props.api_objects.data.map(api_object => (
+                    <li key={api_object.id} ><pre>{JSON.stringify(api_object.attributes,null, 2)}</pre></li>
                 ))}
-            </div>
+            </ul>
         );
     }
-
 };
 
 const mapStateToProps = (state) => {
     console.log(state) // Check the console to see how the state object changes as we read the API
-    const posts = state.api.posts || { data: [] };
+    const api_objects = state.api[collection_name] || { data: [] };
     return {
-        posts
+        api_objects
     }
 };
 
 const ApiResults = connect(
     mapStateToProps
-)(PostList)
+)(ObjectList)
 
 ReactDOM.render(
     <ApiResults store={store} />,
-    document.getElementById('posts')
+    document.getElementById('api_objects')
 );
